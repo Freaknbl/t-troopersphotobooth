@@ -8,8 +8,6 @@
     "build": "vite build",
     "preview": "vite preview"
   },
-  "devDependencies": {
-  },
   "dependencies": {
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
