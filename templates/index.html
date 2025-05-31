@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    <script>
+        function showQRCode() {
+            document.getElementById("qrImage").src = "/generate_qr";
+            document.getElementById("qrContainer").style.display = "block";
+        }
+    </script>
+</head>
+<body>
+    <h1>QR Code Generator</h1>
+    <button onclick="showQRCode()">Tampilkan QR Code</button>
+    
+    <div id="qrContainer" style="display: none;">
+        <h3>Scan QR Code:</h3>
+        <img id="qrImage" src="" alt="QR Code">
+    </div>
+</body>
+</html>

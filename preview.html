@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Preview Gambar</title>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="preview.css" />
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      background-color: red;
+    }
+
+    h1 {
+      color: red;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 12px 20px;
+      cursor: pointer;
+      background-color: rgba(255, 255, 255, 0.9);
+      border: none;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 5px;
+    }
+
+    button img {
+      margin-left: 8px;
+      width: 16px;
+      height: 16px;
+    }
+
+    button:hover {
+      background-color: rgba(255, 255, 255, 1);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 320px;
+      text-align: center;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      color: #aaa;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: black;
+    }
+
+    #qrcode {
+      display: flex;
+      justify-content: center;
+    }
+
+    #loadingSpinner {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 20px;
+      z-index: 9999;
+      flex-direction: column;
+    }
+
+    .spinner {
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid red;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+
+  <!-- Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+</head>
+
+<body>
+
+  <h1>Preview</h1>
+  <canvas id="previewCanvas"></canvas>
+
+  <br />
+  <div>
+    <select id="frameSelect">
+      <option value="frame_2.png">Frame 1</option>
+      <option value="frame_0.png">Frame 2</option>
+    </select>
+  </div>
+
+  <br />
+  <button id="downloadBtn">💾 Download</button>
+  <button id="qrCodeBtn">🤳🏻 Download via QR Code</button>
+  <button id="downloadGifButton">🎬 Download as GIF</button>
+  <button onclick="goHome()">🔄 Take New Photos</button>
+
+  <!-- QR Modal -->
+  <div id="qrModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeModal">&times;</span>
+      <h3>QR Code</h3>
+      <p>Scan this QR code to view and download your photo!</p>
+      <div id="qrcode"></div>
+      <button onclick="copyLink()">Copy Link</button>
+      <p style="font-size: 12px; color: gray;">This link will expire in 10 minutes</p>
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div id="loadingSpinner">
+    <div class="spinner"></div>
+    <div>Loading...</div>
+  </div>
+
+  <!-- Script utama -->
+<script type="module" src="preview.js"></script>
+
+  <!-- Script tambahan dan global function -->
+  <script>
+    const cloudName = "photoboothtelkomsel";
+    const uploadPreset = "photobooth_unsigned";
+
+    function goHome() {
+      window.location.href = 'index.html';
+    }
+
+    const qrModal = document.getElementById("qrModal");
+    const qrCodeContainer = document.getElementById("qrcode");
+    const qrCodeBtn = document.getElementById("qrCodeBtn");
+    const closeModal = document.getElementById("closeModal");
+
+    function showSpinner() {
+      document.getElementById("loadingSpinner").style.display = "flex";
+    }
+
+    function hideSpinner() {
+      document.getElementById("loadingSpinner").style.display = "none";
+    }
+
+    function dataURLtoBlob(dataurl) {
+      const arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+      for (let i = 0; i < n; i++) {
+          u8arr[i] = bstr.charCodeAt(i);
+      }
+      return new Blob([u8arr], { type: mime });
+    }
+
+    function openQRCodeModal() {
+      showSpinner();
+      drawImages(() => {
+        try {
+          const canvas = document.getElementById("previewCanvas");
+          const dataURL = canvas.toDataURL("image/png");
+
+          const formData = new FormData();
+          const blob = dataURLtoBlob(dataURL);
+          formData.append("file", blob);
+          formData.append("upload_preset", uploadPreset);
+
+          fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+            method: "POST",
+            body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.secure_url) {
+              qrCodeContainer.innerHTML = "";
+              new QRCode(qrCodeContainer, {
+                text: data.secure_url,
+                width: 150,
+                height: 150
+              });
+
+              window.generatedLink = data.secure_url;
+              qrModal.style.display = "block";
+            } else {
+              alert("Upload ke Cloudinary gagal.");
+            }
+            hideSpinner();
+          })
+          .catch(error => {
+            console.error("Upload failed:", error);
+            alert("Gagal upload gambar ke Cloudinary.");
+            hideSpinner();
+          });
+        } catch (err) {
+          console.error("QR Error:", err);
+          alert("Gagal membuat QR Code.");
+          hideSpinner();
+        }
+      });
+    }
+
+    function closeQRCodeModal() {
+      qrModal.style.display = "none";
+    }
+
+    function copyLink() {
+      if (window.generatedLink) {
+        navigator.clipboard.writeText(window.generatedLink)
+          .then(() => alert("Link copied!"))
+          .catch(err => console.error("Failed to copy link", err));
+      } else {
+        alert("Link belum tersedia!");
+      }
+    }
+
+    // Event listeners
+    qrCodeBtn.addEventListener("click", openQRCodeModal);
+    closeModal.addEventListener("click", closeQRCodeModal);
+    window.onclick = (event) => {
+      if (event.target === qrModal) {
+        closeQRCodeModal();
+      }
+    };
+
+    // Expose drawImages() after preview.js loaded
+      </script>
+</body>
+</html>

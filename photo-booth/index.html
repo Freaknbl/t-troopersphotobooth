@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Photo Booth - oriente.dev</title>
+  </head>
+  <body>
+    <section class="app-container">
+      <h1>Photo Booth oriente.dev</h1>
+
+      <section class="video-container">
+        <video id="video" autoplay></video>
+
+        <div class="button-container">
+          <button id="capture-btn">Snap!</button>
+        </div>
+      </section>
+
+      <section id="images-container">
+        <!-- Images are rendered here -->
+      </section>
+
+      <!-- not displayed in the web page -->
+      <canvas
+        id="canvas"
+        width="640"
+        height="480"
+        style="display: none"
+      ></canvas>
+    </section>
+
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
