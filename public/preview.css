@@ -5,7 +5,7 @@ h1 {
 
   @font-face {
     font-family: 'MyCustomFont';
-    src: url('fonts/TelkomselBatikSans-Bold.ttf') format('woff');
+    src: url('TelkomselBatikSans-Bold.ttf') format('woff');
   }
   
   h1 {
