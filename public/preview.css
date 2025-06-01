@@ -1,0 +1,85 @@
+h1 {
+    font-size: 40px;
+    text-align: center;
+  }
+
+  @font-face {
+    font-family: 'MyCustomFont';
+    src: url('fonts/TelkomselBatikSans-Bold.ttf') format('woff');
+  }
+  
+  h1 {
+    font-family: 'MyCustomFont', sans-serif;
+  }
+
+  body {
+    flex-direction: column;
+    align-items: center;
+    background: url("cover3.png"); /*MENGGANTI BACKGROUND PREVIEW*/
+    background-size:cover;
+  }
+
+  .frame-select {
+    background-color: #ff4757; /* Warna merah (sesuaikan dengan tombol Snap) */
+    color: white;
+    border: none;
+    border-radius: 8px; /* Sudut membulat */
+    padding: 5px 20px; /* Padding agar mirip tombol */
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .frame-select:hover {
+    background-color: #e84142; /* Warna lebih gelap saat hover */
+}
+  
+  .frame-select:focus {
+    outline: none;
+  }
+  
+  .frameSelect:option {
+    background-color: white; /* Warna merah (sesuaikan dengan tombol Snap) */
+    color: black;
+  }
+
+  #frameSelect {
+    margin-top: 1%;
+    width: 130px; /* Lebar dropdown */
+    text-align: center;
+    padding: 10px;
+    font-size: 12px;
+    font-family: 'MyCustomFont', sans-serif;
+    border-radius: 10px;
+    border: none;
+    background-color: #e84142; /* Warna lebih gelap saat hover */
+    cursor: pointer;
+    outline: none;
+    color: white;
+    
+}
+#previewCanvas {
+  width: 100%;
+  max-width: 379px;  /* batas maksimal agar tetap proporsional di HP */
+  height: auto;
+  display: block;
+  margin: auto;
+}
+
+
+
+#frameSelect:option {
+    background-color: white; /* Warna merah (sesuaikan dengan tombol Snap) */
+    color: black;
+  }
+
+#frameSelect:hover {
+    border-color: #e84142;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
