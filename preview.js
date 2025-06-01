@@ -253,5 +253,5 @@ document.addEventListener("DOMContentLoaded", () => {
         if (spinner) spinner.style.display = "none";
     }
 
-    drawImages(); // Initial render
+    drawImages();
 });
