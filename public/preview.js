@@ -135,7 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
         showSpinner();
 
         const frameOverlay = new Image();
-        frameOverlay.src = 'asset/framegif.png';
+        frameOverlay.src = 'framegif.png';
         frameOverlay.crossOrigin = "anonymous";
 
         const imageFrames = storedImages.map(src => {
